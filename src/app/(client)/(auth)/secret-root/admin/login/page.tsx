@@ -4,9 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { routes } from "@/config/routes";
 import { zodResolver } from "@hookform/resolvers/zod";
+import Link from "next/link";
 import { useState } from "react";
 import { SubmitHandler, useForm } from "react-hook-form";
+import toast from "react-hot-toast";
 import { ImSpinner9 } from "react-icons/im";
 import { IoAlertCircle } from "react-icons/io5";
 import { PiEye, PiEyeClosed } from "react-icons/pi";
@@ -106,9 +109,17 @@ export default function Page() {
                     </div>
                   </div>
 
-                  <Button type="submit" className="w-full">
+                  <Button
+                    type="submit"
+                    className="w-full"
+                    onClick={() => toast.success("Hmm")}
+                  >
                     Login <ImSpinner9 className="animate-spin" />
                   </Button>
+
+                  <Link href={routes.publicRoutes.home}>
+                    <Button>Go to Home</Button>
+                  </Link>
                 </div>
               </form>
             </CardContent>
