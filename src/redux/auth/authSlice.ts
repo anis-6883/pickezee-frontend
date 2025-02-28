@@ -5,7 +5,7 @@ const initialState: IAuthState = {
   user: null,
   isLoggedIn: false,
   role: "",
-  accessToken: null,
+  token: null,
 };
 
 const authSlice = createSlice({
@@ -16,19 +16,15 @@ const authSlice = createSlice({
       state.user = action.payload;
       state.role = action.payload.role;
       state.isLoggedIn = true;
-      state.accessToken = action.payload.accessToken;
+      state.token = action.payload.token;
     },
     userLoggedOut: (state) => {
       state.isLoggedIn = false;
-      state.accessToken = null;
-    },
-    setAccessToken: (state, action) => {
-      state.accessToken = action.payload;
+      state.token = null;
     },
   },
 });
 
-export const { userLoggedIn, userLoggedOut, setAccessToken } =
-  authSlice.actions;
+export const { userLoggedIn, userLoggedOut } = authSlice.actions;
 
 export default authSlice;

@@ -7,6 +7,7 @@ import { authOptions } from "./api/auth/[...nextauth]/auth-options";
 import { outfit } from "./fonts";
 import "./globals.css";
 import AuthProvider from "./providers/AuthProvider";
+import ReduxProvider from "./providers/ReduxProvider";
 
 export const metadata: Metadata = {
   title: "Pickezee",
@@ -32,11 +33,13 @@ export default async function RootLayout({
           enableSystem
           disableTransitionOnChange
         >
-          <AuthProvider session={session}>
-            <NprogressBar />
-            {children}
-            <Toaster />
-          </AuthProvider>
+          <ReduxProvider>
+            <AuthProvider session={session}>
+              <NprogressBar />
+              {children}
+              <Toaster />
+            </AuthProvider>
+          </ReduxProvider>
         </ThemeProvider>
       </body>
     </html>

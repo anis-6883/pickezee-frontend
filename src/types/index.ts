@@ -9,5 +9,5 @@ export interface IAuthState {
   user?: any | undefined;
   role: string;
   isLoggedIn: boolean;
-  accessToken: string | null;
+  token: string | null;
 }

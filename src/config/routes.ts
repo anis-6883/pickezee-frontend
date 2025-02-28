@@ -4,5 +4,9 @@ export const routes = {
     login: "/login",
     adminLogin: "/secret-root/admin/login",
   },
-  privateRoutes: {},
+  privateRoutes: {
+    admin: {
+      dashboard: "/secret-root/admin/dashboard",
+    },
+  },
 };
