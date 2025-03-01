@@ -1,11 +1,5 @@
 import { routes } from "@/config/routes";
-import {
-  BaseQueryFn,
-  createApi,
-  FetchArgs,
-  fetchBaseQuery,
-  FetchBaseQueryError,
-} from "@reduxjs/toolkit/query/react";
+import { BaseQueryFn, createApi, FetchArgs, fetchBaseQuery, FetchBaseQueryError } from "@reduxjs/toolkit/query/react";
 import { signOut } from "next-auth/react";
 import { RootState } from "../store";
 
@@ -19,7 +13,7 @@ export interface SerializedError {
 const baseQuery = fetchBaseQuery({
   baseUrl: process.env.NEXT_PUBLIC_BACKEND_URL as string,
   prepareHeaders: async (headers, { getState }) => {
-    const token = (getState() as RootState).authSlice?.accessToken;
+    const token = (getState() as RootState).authSlice?.token;
     if (token) headers.set("Authorization", `Bearer ${token}`);
     headers.set("x-api-key", process.env.NEXT_PUBLIC_API_KEY as string);
 
@@ -27,11 +21,11 @@ const baseQuery = fetchBaseQuery({
   },
 });
 
-const baseQueryWithReauth: BaseQueryFn<
-  string | FetchArgs,
-  unknown,
-  FetchBaseQueryError
-> = async (args, api, extraOptions) => {
+const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQueryError> = async (
+  args,
+  api,
+  extraOptions
+) => {
   let result = await baseQuery(args, api, extraOptions);
   const loginEndpoints = ["login", "adminLogin"];
   if (
