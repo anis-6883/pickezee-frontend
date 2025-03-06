@@ -7,7 +7,7 @@ import { getServerSession } from "next-auth";
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { IoHome } from "react-icons/io5";
-import AdminLoginForm from "./components/AdminLoginForm";
+import AdminLoginForm from "../../../_components/AdminLoginForm";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);

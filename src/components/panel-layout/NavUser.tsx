@@ -11,7 +11,13 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 import { SidebarMenu, SidebarMenuButton, SidebarMenuItem, useSidebar } from "@/components/ui/sidebar";
+import { routes } from "@/config/routes";
+import { userLoggedOut } from "@/redux/auth/authSlice";
 import { BadgeCheck, Bell, ChevronsUpDown, CreditCard, LogOut, Sparkles } from "lucide-react";
+import { signOut } from "next-auth/react";
+import { useRouter } from "next/navigation";
+import toast from "react-hot-toast";
+import { useDispatch } from "react-redux";
 
 export function NavUser({
   user,
@@ -23,6 +29,21 @@ export function NavUser({
   };
 }) {
   const { isMobile } = useSidebar();
+  const dispatch = useDispatch();
+  const { replace } = useRouter();
+
+  // Handle Logout Response
+  const handleLogout = async () => {
+    await signOut({
+      redirect: false,
+      callbackUrl: routes.publicRoutes.adminLogin,
+    });
+
+    toast.success("Logout Successfully!");
+
+    dispatch(userLoggedOut(undefined));
+    replace(routes.publicRoutes.adminLogin);
+  };
 
   return (
     <SidebarMenu>
@@ -85,7 +106,7 @@ export function NavUser({
               </DropdownMenuItem>
             </DropdownMenuGroup>
             <DropdownMenuSeparator />
-            <DropdownMenuItem>
+            <DropdownMenuItem onClick={handleLogout}>
               <LogOut />
               Log out
             </DropdownMenuItem>

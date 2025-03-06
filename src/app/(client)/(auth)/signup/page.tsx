@@ -1,7 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { routes } from "@/config/routes";
 import Link from "next/link";
-import UserLoginForm from "../_components/UserLoginForm";
+import UserSignUpForm from "../_components/UserSignUpForm";
 
 export default function Page() {
   return (
@@ -13,16 +13,16 @@ export default function Page() {
               <div>
                 <div className='flex flex-col items-center text-center mb-8'>
                   <h1 className='text-2xl font-bold'>Welcome Back</h1>
-                  <p className='text-balance text-muted-foreground'>Login to your PickEzee Account!</p>
+                  <p className='text-balance text-muted-foreground'>Sign up into PickEzee platform!</p>
                 </div>
               </div>
 
-              <UserLoginForm />
+              <UserSignUpForm />
 
               <div className='text-center text-sm mt-5'>
-                Don&apos;t have an account?{" "}
-                <Link href={routes.publicRoutes.signup} className='underline underline-offset-4'>
-                  Sign up
+                Already have an account?{" "}
+                <Link href={routes.publicRoutes.login} className='underline underline-offset-4'>
+                  Login
                 </Link>
               </div>
             </CardContent>
