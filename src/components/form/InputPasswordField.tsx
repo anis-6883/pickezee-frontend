@@ -1,17 +1,17 @@
+import { useState } from "react";
 import { useFormContext } from "react-hook-form";
 import { IoAlertCircle } from "react-icons/io5";
+import { PiEye, PiEyeClosed } from "react-icons/pi";
 import { Input } from "../ui/input";
 import { Label } from "../ui/label";
 
-export default function InputField({
+export default function InputPasswordField({
   name,
   label,
   placeholder,
   required = true,
   disabled = false,
-  type = "text",
   prefix,
-  suffix,
   className = "",
   autoComplete = "new-password",
 }: {
@@ -19,9 +19,7 @@ export default function InputField({
   label: string | React.ReactNode;
   placeholder?: string;
   required?: boolean;
-  type?: string;
   prefix?: React.ReactNode;
-  suffix?: React.ReactNode;
   disabled?: boolean;
   className?: string;
   autoComplete?: "off" | "new-password";
@@ -30,6 +28,8 @@ export default function InputField({
     register,
     formState: { errors },
   } = useFormContext();
+
+  const [showPassword, setShowPassword] = useState(false);
 
   return (
     <div className='w-full space-y-1'>
@@ -40,16 +40,21 @@ export default function InputField({
         {prefix && <div className='absolute left-3 flex h-full items-center'>{prefix}</div>}
         <Input
           id={name}
-          type={type}
+          type={showPassword ? "text" : "password"}
           placeholder={placeholder}
           {...register(name)}
           autoComplete={autoComplete}
           disabled={disabled}
-          className={`${className} ${prefix && "pl-10"} ${suffix && "pr-10"} ${
+          className={`${className} ${prefix && "pl-10"} pr-10 ${
             errors[name] && "border-destructive focus-visible:ring-destructive"
           }`}
         />
-        {suffix && <div className='absolute right-3 flex h-full items-center'>{suffix}</div>}
+        <div
+          className='absolute right-3 flex h-full items-center cursor-pointer'
+          onClick={() => setShowPassword(!showPassword)}
+        >
+          {showPassword ? <PiEye className='text-xl' /> : <PiEyeClosed className='text-xl' />}
+        </div>
       </div>
       {errors[name] && (
         <span className='text-xs text-destructive flex items-center gap-x-1 mt-1'>
