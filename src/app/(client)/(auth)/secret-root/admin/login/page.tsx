@@ -7,7 +7,6 @@ import Link from "next/link";
 import { redirect } from "next/navigation";
 import { FaCartShopping } from "react-icons/fa6";
 import AdminLoginForm from "../../../_components/AdminLoginForm";
-import DotPattern from "../../../_components/DotPattern";
 
 export default async function Page() {
   const session = await getServerSession(authOptions);
@@ -18,7 +17,6 @@ export default async function Page() {
 
   return (
     <div className='flex min-h-svh flex-col items-center justify-center p-6 md:p-10'>
-      <DotPattern />
       <div className='w-full max-w-sm md:max-w-xl'>
         <div className='flex flex-col gap-6'>
           <Card className='overflow-hidden'>
