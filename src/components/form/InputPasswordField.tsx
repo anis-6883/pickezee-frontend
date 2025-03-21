@@ -57,7 +57,7 @@ export default function InputPasswordField({
         </div>
       </div>
       {errors[name] && (
-        <span className='text-xs text-destructive flex items-center gap-x-1 mt-1'>
+        <span className='text-xs text-destructive flex items-center gap-x-1 mt-1 select-none'>
           <IoAlertCircle className='text-lg' />
           {String(errors[name]?.message)}
         </span>

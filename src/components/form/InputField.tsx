@@ -52,7 +52,7 @@ export default function InputField({
         {suffix && <div className='absolute right-3 flex h-full items-center'>{suffix}</div>}
       </div>
       {errors[name] && (
-        <span className='text-xs text-destructive flex items-center gap-x-1 mt-1'>
+        <span className='text-xs text-destructive flex items-center gap-x-1 mt-1 select-none'>
           <IoAlertCircle className='text-lg' />
           {String(errors[name]?.message)}
         </span>
