@@ -79,7 +79,7 @@ export default function UserLoginForm() {
             fill='currentColor'
           />
         </svg>
-        Login with Google
+        Log in with Google
       </Button>
 
       <div className='my-5 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border'>
@@ -87,21 +87,9 @@ export default function UserLoginForm() {
       </div>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <div className='space-y-2'>
-          <InputField
-            name='email'
-            label='Email'
-            placeholder='john@email.com'
-            autoComplete='off'
-            prefix={<FaRegEnvelope />}
-          />
+          <InputField name='email' label='E-mail' placeholder='john@email.com' autoComplete='off' prefix={<FaRegEnvelope />} />
 
-          <InputPasswordField
-            name='password'
-            label='Password'
-            placeholder='123456'
-            autoComplete='off'
-            prefix={<FaLock />}
-          />
+          <InputPasswordField name='password' label='Password' placeholder='123456' autoComplete='off' prefix={<FaLock />} />
         </div>
 
         <p className='text-end text-xs font-semibold my-4 select-none'>
@@ -109,7 +97,7 @@ export default function UserLoginForm() {
         </p>
 
         <Button type='submit' className='w-full'>
-          Login
+          Log in
           {isSubmitting ? <ImSpinner9 className='animate-spin' /> : <BsCheck2Circle className='text-base' />}
         </Button>
       </form>

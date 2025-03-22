@@ -19,8 +19,8 @@ body {
     --primary-hover: #ff006b;
     --secondary: 240 4.8% 95.9%;
     --secondary-foreground: 240 5.9% 10%;
-    --muted: 240 4.8% 95.9%;
-    --muted-foreground: 240 3.8% 46.1%;
+    --muted: #f2f2f7;
+    --muted-foreground: #717376;
     --accent: 240 4.8% 95.9%;
     --accent-foreground: 240 5.9% 10%;
     --neutral: #ffffff;
@@ -57,8 +57,8 @@ body {
     --primary-hover: #ff006b;
     --secondary: 240 3.7% 15.9%;
     --secondary-foreground: 0 0% 98%;
-    --muted: 240 3.7% 15.9%;
-    --muted-foreground: 240 5% 64.9%;
+    --muted: #27272c;
+    --muted-foreground: #a1a1a9;
     --accent: 240 3.7% 15.9%;
     --accent-foreground: 0 0% 98%;
     --neutral: #ffffff;

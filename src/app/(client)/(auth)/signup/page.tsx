@@ -1,18 +1,27 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { routes } from "@/config/routes";
 import Link from "next/link";
+import { FaCartShopping } from "react-icons/fa6";
 import UserSignUpForm from "../_components/UserSignUpForm";
 
 export default function Page() {
   return (
     <div className='flex min-h-svh flex-col items-center justify-center bg-muted p-6 md:p-10'>
-      <div className='w-full max-w-sm md:max-w-xl'>
+      <div className='w-full max-w-sm md:max-w-2xl'>
         <div className='flex flex-col gap-6'>
           <Card className='overflow-hidden'>
             <CardContent className='p-8'>
               <div>
                 <div className='flex flex-col items-center text-center mb-8'>
-                  <h1 className='text-2xl font-bold'>Welcome Back</h1>
+                  <div className='mb-5'>
+                    <Link href='/'>
+                      <p className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-primary'>
+                        <FaCartShopping className='-rotate-[25deg]' /> PickEzee
+                      </p>
+                    </Link>
+                  </div>
+
+                  <h1 className='text-2xl font-bold'>Create Account</h1>
                   <p className='text-balance text-muted-foreground'>Sign up into PickEzee platform!</p>
                 </div>
               </div>
@@ -21,8 +30,8 @@ export default function Page() {
 
               <div className='text-center text-sm mt-5'>
                 Already have an account?{" "}
-                <Link href={routes.publicRoutes.login} className='underline underline-offset-4'>
-                  Login
+                <Link href={routes.publicRoutes.login} className='text-primary underline underline-offset-4'>
+                  Log in
                 </Link>
               </div>
             </CardContent>

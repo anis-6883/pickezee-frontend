@@ -1,6 +1,7 @@
 import { Card, CardContent } from "@/components/ui/card";
 import { routes } from "@/config/routes";
 import Link from "next/link";
+import { FaCartShopping } from "react-icons/fa6";
 import UserLoginForm from "../_components/UserLoginForm";
 
 export default function Page() {
@@ -12,6 +13,14 @@ export default function Page() {
             <CardContent className='p-8'>
               <div>
                 <div className='flex flex-col items-center text-center mb-8'>
+                  <div className='mb-5'>
+                    <Link href='/'>
+                      <p className='flex items-center justify-center gap-1 text-center text-2xl font-bold text-primary'>
+                        <FaCartShopping className='-rotate-[25deg]' /> PickEzee
+                      </p>
+                    </Link>
+                  </div>
+
                   <h1 className='text-2xl font-bold'>Welcome Back</h1>
                   <p className='text-balance text-muted-foreground'>Login to your PickEzee Account!</p>
                 </div>
@@ -20,8 +29,13 @@ export default function Page() {
               <UserLoginForm />
 
               <div className='text-center text-sm mt-5'>
+                <Link href={routes.publicRoutes.signup} className=''>
+                  Forget Your Password?
+                </Link>
+              </div>
+              <div className='text-center text-sm mt-5'>
                 Don&apos;t have an account?{" "}
-                <Link href={routes.publicRoutes.signup} className='underline underline-offset-4'>
+                <Link href={routes.publicRoutes.signup} className='text-primary underline underline-offset-4'>
                   Sign up
                 </Link>
               </div>

@@ -3,13 +3,9 @@
 import InputField from "@/components/form/InputField";
 import InputPasswordField from "@/components/form/InputPasswordField";
 import { Button } from "@/components/ui/button";
-import { ROLE } from "@/config/constants";
-import { routes } from "@/config/routes";
 import { SerializedError } from "@/redux/api/apiSlice";
-import { useAdminLoginMutation } from "@/redux/auth/authApi";
-import { userLoggedIn } from "@/redux/auth/authSlice";
+import { useUserSignUpMutation } from "@/redux/auth/authApi";
 import { zodResolver } from "@hookform/resolvers/zod";
-import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { FormProvider, SubmitHandler, useForm } from "react-hook-form";
@@ -20,28 +16,30 @@ import { FaPhone } from "react-icons/fa6";
 import { ImSpinner9 } from "react-icons/im";
 import { useDispatch } from "react-redux";
 import { z } from "zod";
+import OtpFormModal from "./OtpFormModal";
 
-const loginSchema = z.object({
+const signUpSchema = z.object({
   name: z.string().min(1, "Required!"),
   phone: z
     .string()
     .min(1, "Required!")
-    .length(11, "Phone number must be exactly 11 characters long!")
-    .regex(/^\d+$/, "Phone number must contain only digits!"),
+    .length(11, "Must be exactly 11 characters long!")
+    .regex(/^01\d{9}$/, "Must start with '01' and contain only digits!"),
   email: z.string().min(1, "Required!").email("Valid email is required!"),
   password: z.string().min(1, "Required!"),
 });
 
-type TFormInput = z.infer<typeof loginSchema>;
+type TFormInput = z.infer<typeof signUpSchema>;
 
 export default function UserSignUpForm() {
   const { replace } = useRouter();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [login, { data: loginResponse, isSuccess, error }] = useAdminLoginMutation();
+  const [modalState, setModalState] = useState(false);
+  const [signUp, { data: loginResponse, isSuccess, error }] = useUserSignUpMutation();
 
   const methods = useForm<TFormInput>({
-    resolver: zodResolver(loginSchema),
+    resolver: zodResolver(signUpSchema),
   });
 
   useEffect(() => {
@@ -52,29 +50,12 @@ export default function UserSignUpForm() {
     }
 
     if (isSuccess) {
-      dispatch(userLoggedIn(loginResponse?.data));
-
-      signIn("credentials", {
-        userData: JSON.stringify(loginResponse?.data),
-        redirect: false,
-      }).then((callback) => {
-        if (callback?.error) {
-          setIsSubmitting(false);
-          toast.error(callback?.error);
-        }
-        if (callback?.ok && !callback?.error) {
-          toast.success("Welcome to Admin Panel!");
-          if (loginResponse?.data?.role === ROLE.ADMIN) {
-            replace(routes.privateRoutes.admin.dashboard);
-          }
-        }
-      });
     }
   }, [dispatch, error, isSuccess, loginResponse, replace]);
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     setIsSubmitting(true);
-    // login({ email: data.email, password: data.password });
+    // signUp({ name: data.name, email: data.email, password: data.password, phone: data.phone });
   };
 
   return (
@@ -86,25 +67,34 @@ export default function UserSignUpForm() {
             fill='currentColor'
           />
         </svg>
-        Sign Up with Google
+        Sign up with Google
       </Button>
 
       <div className='my-5 relative text-center text-sm after:absolute after:inset-0 after:top-1/2 after:z-0 after:flex after:items-center after:border-t after:border-border'>
         <span className='relative z-10 bg-background px-2 text-muted-foreground'>Or continue with</span>
       </div>
+
       <form onSubmit={methods.handleSubmit(onSubmit)}>
-        <div className='space-y-2'>
+        <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
           <InputField name='name' label='Name' placeholder='John Doe' autoComplete='off' prefix={<FaUserCircle />} />
 
           <InputField
+            type='number'
+            name='phone'
+            label='Phone'
+            placeholder='01XXXXXXXXX'
+            autoComplete='off'
+            prefix={<FaPhone />}
+            className='appearance-none [&::-webkit-inner-spin-button]:appearance-none [&::-webkit-outer-spin-button]:appearance-none'
+          />
+
+          <InputField
             name='email'
-            label='Email'
+            label='E-mail'
             placeholder='john.doe@email.com'
             autoComplete='off'
             prefix={<FaRegEnvelope />}
           />
-
-          <InputField name='phone' label='Phone' placeholder='01XXXXXXXXX' autoComplete='off' prefix={<FaPhone />} />
 
           <InputPasswordField
             name='password'
@@ -120,10 +110,15 @@ export default function UserSignUpForm() {
         </p>
 
         <Button type='submit' className='w-full'>
-          Login
+          Sign up
           {isSubmitting ? <ImSpinner9 className='animate-spin' /> : <BsCheck2Circle className='text-base' />}
         </Button>
       </form>
+
+      <OtpFormModal modalState={modalState} setModalState={setModalState} />
+      {/* <Button className='mt-4' onClick={() => setModalState(true)}>
+        OTP Modal
+      </Button> */}
     </FormProvider>
   );
 }

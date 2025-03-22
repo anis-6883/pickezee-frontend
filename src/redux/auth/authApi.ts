@@ -12,7 +12,50 @@ export const authApi = apiSlice.injectEndpoints({
       },
       invalidatesTags: ["admin-profile"],
     }),
+    userSignUp: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/api/v1/auth/register`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    userResendOtp: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/api/v1/auth/resend-otp`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    userVerifyOtp: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/api/v1/auth/verify-otp`,
+          method: "POST",
+          body: data,
+        };
+      },
+    }),
+    userLogin: builder.mutation({
+      query: (data) => {
+        return {
+          url: `/api/v1/auth/login`,
+          method: "POST",
+          body: data,
+        };
+      },
+      invalidatesTags: ["user-profile"],
+    }),
   }),
 });
 
-export const { useAdminLoginMutation } = authApi;
+export const {
+  useAdminLoginMutation,
+  useUserSignUpMutation,
+  useUserVerifyOtpMutation,
+  useUserResendOtpMutation,
+  useUserLoginMutation,
+} = authApi;
