@@ -22,9 +22,12 @@ const authSlice = createSlice({
       state.isLoggedIn = false;
       state.token = null;
     },
+    setToken: (state, action) => {
+      state.token = action.payload;
+    },
   },
 });
 
-export const { userLoggedIn, userLoggedOut } = authSlice.actions;
+export const { userLoggedIn, userLoggedOut, setToken } = authSlice.actions;
 
 export default authSlice;

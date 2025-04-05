@@ -6,7 +6,7 @@ import { Button } from "@/components/ui/button";
 import { ROLE } from "@/config/constants";
 import { routes } from "@/config/routes";
 import { SerializedError } from "@/redux/api/apiSlice";
-import { useAdminLoginMutation } from "@/redux/auth/authApi";
+import { useUserLoginMutation } from "@/redux/auth/authApi";
 import { userLoggedIn } from "@/redux/auth/authSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { signIn } from "next-auth/react";
@@ -31,12 +31,13 @@ export default function UserLoginForm() {
   const { replace } = useRouter();
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
-  const [login, { data: loginResponse, isSuccess, error }] = useAdminLoginMutation();
+  const [login, { data: loginResponse, isSuccess, error }] = useUserLoginMutation();
 
   const methods = useForm<TFormInput>({
     resolver: zodResolver(loginSchema),
   });
 
+  // Handle Login Response
   useEffect(() => {
     if (error) {
       setIsSubmitting(false);
@@ -57,17 +58,18 @@ export default function UserLoginForm() {
         }
         if (callback?.ok && !callback?.error) {
           toast.success("Welcome to Admin Panel!");
-          if (loginResponse?.data?.role === ROLE.ADMIN) {
-            replace(routes.privateRoutes.admin.dashboard);
+          if (loginResponse?.data?.role === ROLE.USER) {
+            replace(routes.publicRoutes.home);
           }
         }
       });
     }
   }, [dispatch, error, isSuccess, loginResponse, replace]);
 
+  // Handle Submit
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     setIsSubmitting(true);
-    // login({ email: data.email, password: data.password });
+    login({ ...data, provider: "email" });
   };
 
   return (
@@ -87,9 +89,21 @@ export default function UserLoginForm() {
       </div>
       <form onSubmit={methods.handleSubmit(onSubmit)}>
         <div className='space-y-2'>
-          <InputField name='email' label='E-mail' placeholder='john@email.com' autoComplete='off' prefix={<FaRegEnvelope />} />
+          <InputField
+            name='email'
+            label='E-mail'
+            placeholder='john@email.com'
+            autoComplete='off'
+            prefix={<FaRegEnvelope />}
+          />
 
-          <InputPasswordField name='password' label='Password' placeholder='123456' autoComplete='off' prefix={<FaLock />} />
+          <InputPasswordField
+            name='password'
+            label='Password'
+            placeholder='123456'
+            autoComplete='off'
+            prefix={<FaLock />}
+          />
         </div>
 
         <p className='text-end text-xs font-semibold my-4 select-none'>

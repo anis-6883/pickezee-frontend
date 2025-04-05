@@ -1,3 +1,4 @@
+import { ROLE } from "@/config/constants";
 import { withAuth } from "next-auth/middleware";
 import { NextResponse } from "next/server";
 import { routes } from "./config/routes";
@@ -20,7 +21,6 @@ function extractLinks(obj: any) {
 }
 
 const adminProtectedRoutes = extractLinks(routes?.privateRoutes?.admin);
-// const retailerProtectedRoutes = extractLinks(routes?.privateRoutes?.retailer);
 
 const middleware = withAuth(
   function middleware(request) {
@@ -28,20 +28,14 @@ const middleware = withAuth(
     const pathname = request.nextUrl.pathname;
 
     const isAdminProtected = adminProtectedRoutes.includes(pathname);
-    // const isRetailerProtected = retailerProtectedRoutes.includes(pathname);
 
     if (!token && isAdminProtected) {
       return NextResponse.redirect(new URL(routes.publicRoutes.login, request.nextUrl));
     }
 
-    // if (token) {
-    //   if (token.role === ROLE.RETAILER && isAdminProtected) {
-    //     return NextResponse.redirect(new URL(routes.privateRoutes.retailer.dashboard, request.nextUrl));
-    //   }
-    //   if (token.role === ROLE.ADMIN && isRetailerProtected) {
-    //     return NextResponse.redirect(new URL(routes.privateRoutes.Admin.dashboard, request.nextUrl));
-    //   }
-    // }
+    if (token && token.role === ROLE.USER && isAdminProtected) {
+      return NextResponse.redirect(new URL(routes.publicRoutes.home, request.nextUrl));
+    }
   },
   {
     callbacks: {

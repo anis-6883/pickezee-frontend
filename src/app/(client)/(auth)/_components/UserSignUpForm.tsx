@@ -5,6 +5,7 @@ import InputPasswordField from "@/components/form/InputPasswordField";
 import { Button } from "@/components/ui/button";
 import { SerializedError } from "@/redux/api/apiSlice";
 import { useUserSignUpMutation } from "@/redux/auth/authApi";
+import { setToken } from "@/redux/auth/authSlice";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
@@ -36,7 +37,7 @@ export default function UserSignUpForm() {
   const dispatch = useDispatch();
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [modalState, setModalState] = useState(false);
-  const [signUp, { data: loginResponse, isSuccess, error }] = useUserSignUpMutation();
+  const [signUp, { data: signUpResponse, isSuccess, error }] = useUserSignUpMutation();
 
   const methods = useForm<TFormInput>({
     resolver: zodResolver(signUpSchema),
@@ -46,16 +47,24 @@ export default function UserSignUpForm() {
     if (error) {
       setIsSubmitting(false);
       const myError = error as SerializedError;
-      toast.error(myError?.data?.message || "Something went wrong!");
+      toast.error(myError?.data?.message || "Something went wrong!", {
+        style: {
+          minWidth: "400px",
+        },
+      });
     }
 
     if (isSuccess) {
+      setIsSubmitting(false);
+      dispatch(setToken(signUpResponse?.data?.token));
+      toast.success(signUpResponse?.message);
+      setModalState(true);
     }
-  }, [dispatch, error, isSuccess, loginResponse, replace]);
+  }, [dispatch, error, isSuccess, signUpResponse, replace]);
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     setIsSubmitting(true);
-    // signUp({ name: data.name, email: data.email, password: data.password, phone: data.phone });
+    signUp({ ...data, provider: "email" });
   };
 
   return (
@@ -116,9 +125,6 @@ export default function UserSignUpForm() {
       </form>
 
       <OtpFormModal modalState={modalState} setModalState={setModalState} />
-      {/* <Button className='mt-4' onClick={() => setModalState(true)}>
-        OTP Modal
-      </Button> */}
     </FormProvider>
   );
 }

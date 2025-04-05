@@ -1,16 +1,21 @@
 import { Button } from "@/components/ui/button";
 import { Dialog, DialogContent, DialogDescription, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { InputOTP, InputOTPGroup, InputOTPSeparator, InputOTPSlot } from "@/components/ui/input-otp";
+import { ROLE } from "@/config/constants";
+import { routes } from "@/config/routes";
 import { useTimer } from "@/hooks/use-timer";
 import { SerializedError } from "@/redux/api/apiSlice";
 import { useUserResendOtpMutation, useUserVerifyOtpMutation } from "@/redux/auth/authApi";
+import { userLoggedIn } from "@/redux/auth/authSlice";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
+import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { BsCheck2Circle } from "react-icons/bs";
 import { ImSpinner9 } from "react-icons/im";
 import { IoCloseOutline } from "react-icons/io5";
+import { useDispatch } from "react-redux";
 
 export default function OtpFormModal({
   modalState,
@@ -19,13 +24,15 @@ export default function OtpFormModal({
   setModalState: (state: boolean) => void;
   modalState: boolean;
 }) {
+  const dispatch = useDispatch();
   const { replace } = useRouter();
   const { reset, timer } = useTimer(120);
   const [pin, setPin] = useState("");
   const [otpValidMsg, setOtpValidMsg] = useState("");
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [resendOtpSubmitting, setResendOtpSubmitting] = useState(false);
-  const [verifyOtp, { data, error: verifyError, isSuccess: verifySuccess }] = useUserVerifyOtpMutation();
+  const [verifyOtp, { data: verifyResponse, error: verifyError, isSuccess: verifySuccess }] =
+    useUserVerifyOtpMutation();
   const [resendOtp, { error: resendError, isSuccess: resendSuccess }] = useUserResendOtpMutation();
 
   useEffect(() => {
@@ -43,25 +50,25 @@ export default function OtpFormModal({
 
     if (verifySuccess) {
       setIsSubmitting(false);
-      //   dispatch(userLoggedIn(data?.data));
-      toast.success(data?.message || "Otp verified & Login successfully!");
+      dispatch(userLoggedIn(verifyResponse?.data));
+      toast.success(verifyResponse?.message || "Otp verified & Login successfully!");
 
-      //   signIn('credentials', {
-      //     userData: JSON.stringify(verifyResponse?.data),
-      //     redirect: false,
-      //   }).then((callback) => {
-      //     if (callback?.error) {
-      //       setIsSubmitting(false);
-      //       toast.error(callback?.error);
-      //     }
-      //     if (callback?.ok && !callback?.error) {
-      //       if (verifyResponse?.data?.role === ROLE.RETAILER) {
-      //         replace(routes.privateRoutes.checkout);
-      //       }
-      //     }
-      //   });
+      signIn("credentials", {
+        userData: JSON.stringify(verifyResponse?.data),
+        redirect: false,
+      }).then((callback) => {
+        if (callback?.error) {
+          setIsSubmitting(false);
+          toast.error(callback?.error);
+        }
+        if (callback?.ok && !callback?.error) {
+          if (verifyResponse?.data?.role === ROLE.USER) {
+            replace(routes.publicRoutes.home);
+          }
+        }
+      });
     }
-  }, [replace, verifyError, data, verifySuccess]);
+  }, [dispatch, replace, verifyError, verifyResponse, verifySuccess]);
 
   // Handle Resend Otp Submit
   const handleResendOtp = () => {
@@ -80,7 +87,7 @@ export default function OtpFormModal({
         setIsSubmitting(false);
         setOtpValidMsg("Please, Enter Valid OTP!");
       } else {
-        verifyOtp({ pin });
+        verifyOtp({ otp: pin });
       }
     } else {
       setOtpValidMsg("Please, Enter Valid OTP!");

@@ -67,7 +67,7 @@ export default function AdminLoginForm() {
 
   const onSubmit: SubmitHandler<TFormInput> = (data) => {
     setIsSubmitting(true);
-    login({ email: data.email, password: data.password });
+    login(data);
   };
 
   return (
