@@ -5,8 +5,8 @@ import { ROLE } from "@/config/constants";
 import { routes } from "@/config/routes";
 import { useTimer } from "@/hooks/use-timer";
 import { SerializedError } from "@/redux/api/apiSlice";
-import { useUserResendOtpMutation, useUserVerifyOtpMutation } from "@/redux/auth/authApi";
-import { userLoggedIn } from "@/redux/auth/authSlice";
+import { useLazyUserResendOtpQuery, useUserVerifyOtpMutation } from "@/redux/auth/authApi";
+import { setToken, userLoggedIn } from "@/redux/auth/authSlice";
 import { REGEXP_ONLY_DIGITS } from "input-otp";
 import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -33,7 +33,8 @@ export default function OtpFormModal({
   const [resendOtpSubmitting, setResendOtpSubmitting] = useState(false);
   const [verifyOtp, { data: verifyResponse, error: verifyError, isSuccess: verifySuccess }] =
     useUserVerifyOtpMutation();
-  const [resendOtp, { error: resendError, isSuccess: resendSuccess }] = useUserResendOtpMutation();
+  const [resendOtp, { data: resendResponse, error: resendError, isSuccess: resendSuccess }] =
+    useLazyUserResendOtpQuery();
 
   useEffect(() => {
     if (modalState) {
@@ -69,6 +70,24 @@ export default function OtpFormModal({
       });
     }
   }, [dispatch, replace, verifyError, verifyResponse, verifySuccess]);
+
+  useEffect(() => {
+    if (resendError) {
+      const myError = resendError as SerializedError;
+      setResendOtpSubmitting(false);
+      toast.error(myError?.data?.message || "Something went wrong!", {
+        style: {
+          minWidth: "400px",
+        },
+      });
+    }
+
+    if (resendSuccess) {
+      setResendOtpSubmitting(false);
+      dispatch(setToken(resendResponse?.data?.token));
+      reset();
+    }
+  }, [resendError, resendSuccess, resendResponse, dispatch, reset]);
 
   // Handle Resend Otp Submit
   const handleResendOtp = () => {

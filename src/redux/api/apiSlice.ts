@@ -27,7 +27,7 @@ const baseQueryWithReauth: BaseQueryFn<string | FetchArgs, unknown, FetchBaseQue
   extraOptions
 ) => {
   let result = await baseQuery(args, api, extraOptions);
-  const loginEndpoints = ["userLogin", "adminLogin"];
+  const loginEndpoints = ["userLogin", "adminLogin", "userResendOtp"];
 
   if (
     !loginEndpoints?.includes(api?.endpoint) &&

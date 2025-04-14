@@ -57,7 +57,7 @@ export default function UserLoginForm() {
           toast.error(callback?.error);
         }
         if (callback?.ok && !callback?.error) {
-          toast.success("Welcome to Admin Panel!");
+          toast.success("Welcome & Happy Shopping!");
           if (loginResponse?.data?.role === ROLE.USER) {
             replace(routes.publicRoutes.home);
           }
